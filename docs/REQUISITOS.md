@@ -16,9 +16,9 @@ Este documento separa lo implementado en el código de las verificaciones que ne
 | Auditoría N+1 e indexación               | [Auditoría reproducible](PERFORMANCE.md)                                                                        | Mostrar una consulta del listado y su plan con el índice en `userId`                   |
 | Automatización sin código, optativa      | Propuesta de ampliación con n8n en la [guía de defensa](EXPOSICION.md)                                          | Explicar trigger → HTTP Request → resumen; no se implementó una automatización externa |
 
-## Pendientes que no se pueden reemplazar con documentación
+## Estado de las evidencias
 
-- **CI remota:** subir el código al repositorio elegido y comprobar que el workflow termina en verde.
+- **CI remota verificada:** el [run #1](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb/actions/runs/41840228963) terminó con `success` para el commit `681c3a3`. Incluye ambos jobs, Jest, compilaciones, migraciones y auditorías de producción.
 - **Producción:** crear/configurar los recursos del proveedor, publicar ambos servicios, aplicar migraciones y verificar la aplicación por HTTPS.
 - **Historial de cursada:** presentar commits, entregas y checkpoints reales de las semanas 7 a 13. El proyecto no genera ni reconstruye evidencia de semanas anteriores.
 - **Defensa individual:** entender las decisiones y practicar la explicación; leer una guía no reemplaza el dominio del código.
@@ -27,13 +27,13 @@ El enunciado asigna el 70% a la presentación del código desarrollado durante l
 
 ## Registro para completar antes de entregar
 
-| Evidencia externa            | Enlace o resultado real                                                             |
-| ---------------------------- | ----------------------------------------------------------------------------------- |
-| Repositorio                  | [CRM-ProgramacionWeb](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb) |
-| Run de CI exitoso            | Pendiente de registrar                                                              |
-| Frontend de producción       | Pendiente de verificar                                                              |
-| Backend de producción        | Pendiente de verificar                                                              |
-| Swagger de producción        | Pendiente de verificar                                                              |
-| Prueba final de persistencia | Pendiente de verificar                                                              |
+| Evidencia externa            | Enlace o resultado real                                                                                   |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Repositorio                  | [CRM-ProgramacionWeb](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb)                       |
+| Run de CI exitoso            | [Run #1 · success](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb/actions/runs/41840228963) |
+| Frontend de producción       | Pendiente de verificar                                                                                    |
+| Backend de producción        | Pendiente de verificar                                                                                    |
+| Swagger de producción        | Pendiente de verificar                                                                                    |
+| Prueba final de persistencia | Pendiente de verificar                                                                                    |
 
 No conviene marcar una fila como cumplida hasta tener su resultado real.

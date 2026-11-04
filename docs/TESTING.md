@@ -87,6 +87,6 @@ No hace falta memorizar todos los tests. Conviene poder explicar qué riesgo cub
 
 ## Integración continua y evidencia
 
-La definición de GitHub Actions está en `.github/workflows/ci.yml`. La existencia del archivo demuestra configuración; un run verde en el repositorio remoto demuestra que se ejecutó allí. Antes de la entrega hay que subir el proyecto y conservar el enlace a una ejecución exitosa.
+La definición de GitHub Actions está en `.github/workflows/ci.yml`. La existencia del archivo demuestra configuración; un run verde en el repositorio remoto demuestra que se ejecutó allí. El [run #1](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb/actions/runs/41840228963) del commit `681c3a3` terminó en verde el 4 de noviembre de 2026: ambos jobs ejecutaron las pruebas, las compilaciones y las auditorías, y el backend aplicó las migraciones en PostgreSQL temporal.
 
 CI comprueba automáticamente el código al recibir cambios. Desplegar es otro paso: publicar el backend y el frontend, configurar sus variables y verificar sus URLs. Un build local exitoso no reemplaza esa evidencia.

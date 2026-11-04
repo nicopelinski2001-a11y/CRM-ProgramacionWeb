@@ -2,7 +2,7 @@
 
 El proyecto tiene dos aplicaciones y una base PostgreSQL. La configuración está en [render.yaml](../render.yaml). Las pruebas y compilaciones se ejecutan con GitHub Actions antes de desplegar.
 
-**Estado:** configuración preparada. Una compilación local, un archivo YAML o una URL escrita como ejemplo no prueban que exista un despliegue. Se considera publicado cuando ambos servicios responden por HTTPS y el recorrido de registro y contactos funciona contra la base remota.
+**Estado:** [CI remota verificada](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb/actions/runs/41840228963); publicación pendiente de conectar y configurar Render. La configuración está preparada. Una compilación local, un archivo YAML o una URL escrita como ejemplo no prueban que exista un despliegue. Se considera publicado cuando ambos servicios responden por HTTPS y el recorrido de registro y contactos funciona contra la base remota.
 
 ## 1. Repositorio y CI
 

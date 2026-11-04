@@ -1,5 +1,7 @@
 # órbita · CRM
 
+[![CI](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb/actions/workflows/ci.yml/badge.svg)](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb/actions/workflows/ci.yml)
+
 CRM de contactos para el segundo parcial de Programación Web. Permite registrar personas y empresas, guardar sus datos y notas, y seguir la relación comercial en tres estados: **Prospecto**, **En seguimiento** y **Cliente**.
 
 El login del primer parcial se mantiene. Cada cuenta ve y administra sus propios contactos, guardados en PostgreSQL.
