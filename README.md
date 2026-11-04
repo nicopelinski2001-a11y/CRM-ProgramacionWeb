@@ -2,234 +2,182 @@
 
 [![CI](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb/actions/workflows/ci.yml/badge.svg)](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb/actions/workflows/ci.yml)
 
-CRM de contactos para el segundo parcial de Programación Web. Permite registrar personas y empresas, guardar sus datos y notas, y seguir la relación comercial en tres estados: **Prospecto**, **En seguimiento** y **Cliente**.
+**Órbita** es una aplicación web para organizar contactos y dar seguimiento a relaciones comerciales. Reúne información de personas y empresas, datos de contacto y notas en un espacio privado para cada cuenta.
 
-El login del primer parcial se mantiene. Cada cuenta ve y administra sus propios contactos, guardados en PostgreSQL.
+La interfaz permite consultar la red de contactos, encontrar información y actualizar el estado de cada relación. Los datos se almacenan en PostgreSQL y permanecen disponibles entre sesiones.
 
-La [guía para la exposición](docs/EXPOSICION.md) incluye una demostración y preguntas posibles del profesor. La [matriz de requisitos](docs/REQUISITOS.md) distingue el código disponible de la evidencia remota de CI y producción.
+## Funcionalidades
 
-## Documentación para la entrega
+- Registro de cuentas, inicio y cierre de sesión.
+- Creación, consulta, edición y eliminación de contactos con confirmación.
+- Fichas con nombre, empresa, email, teléfono, notas y estado comercial.
+- Búsqueda por nombre, empresa, email o teléfono, con coincidencias que ignoran acentos.
+- Filtros por estado, orden alfabético o por fecha de alta y contadores de contactos.
+- Interfaz adaptable: tabla en escritorio y tarjetas en pantallas pequeñas.
 
-- [Exposición y defensa](docs/EXPOSICION.md): recorrido del proyecto y preguntas.
-- [Seguridad y límites](docs/SEGURIDAD.md): controles relacionados con OWASP y riesgos pendientes.
-- [Testing con Jest](docs/TESTING.md): pruebas unitarias, componentes e integración.
-- [Auditoría de rendimiento](docs/PERFORMANCE.md): N+1, índices y medición reproducible.
-- [Despliegue](docs/DESPLIEGUE.md): publicar backend, frontend y base sin subir secretos.
-- Swagger interactivo: `http://localhost:4000/api/docs`.
-- Contrato OpenAPI: `http://localhost:4000/api/openapi.json`.
+Cada contacto pertenece a una cuenta. La API verifica esa propiedad al consultar o modificar los datos.
 
-## Tecnologías
+### Estados comerciales
 
-| Parte          | Tecnología                | Responsabilidad                                  |
-| -------------- | ------------------------- | ------------------------------------------------ |
-| Interfaz       | React + TypeScript + Vite | Pantallas, formularios y filtros                 |
-| API            | Express + TypeScript      | Recibir pedidos y aplicar las reglas             |
-| Validación     | Zod                       | Comprobar y normalizar los datos recibidos       |
-| Documentación  | OpenAPI + Swagger UI      | Contrato de la API y pedidos interactivos        |
-| Pruebas        | Jest + Testing Library    | Reglas, componentes e integración con PostgreSQL |
-| CI             | GitHub Actions            | Ejecutar pruebas y builds sobre cambios          |
-| Autenticación  | JWT + bcrypt              | Identificar al usuario y proteger contraseñas    |
-| Acceso a datos | Prisma                    | Consultar y modificar la base de datos           |
-| Base de datos  | PostgreSQL                | Guardar usuarios y contactos                     |
+| Estado             | Descripción                                                           |
+| ------------------ | --------------------------------------------------------------------- |
+| **Prospecto**      | Contacto potencial con el que puede iniciarse una relación comercial. |
+| **En seguimiento** | Contacto con una conversación o propuesta en curso.                   |
+| **Cliente**        | Contacto con una relación comercial concretada.                       |
+
+Los estados se actualizan manualmente. El alcance actual se concentra en contactos; no incluye ventas, facturación ni automatizaciones.
+
+## Tecnologías y arquitectura
+
+| Área                       | Tecnologías                            |
+| -------------------------- | -------------------------------------- |
+| Frontend                   | React, TypeScript, Vite y Tailwind CSS |
+| Backend                    | Node.js, Express y TypeScript          |
+| Persistencia               | PostgreSQL y Prisma                    |
+| Autenticación y validación | JWT, bcrypt y Zod                      |
+| Documentación de API       | OpenAPI y Swagger UI                   |
+| Pruebas                    | Jest y Testing Library                 |
+| Integración continua       | GitHub Actions                         |
 
 ```text
-parcial-web/
-├── backend/
-│   ├── prisma/           # Modelo, migraciones y datos de ejemplo
-│   └── src/
-│       ├── routes/       # URLs y métodos de la API
-│       ├── controllers/  # Operaciones de cada recurso
-│       ├── schemas/      # Validaciones de entrada
-│       ├── middlewares/  # Autenticación, validación y errores
-│       └── services/     # Reglas de contactos y consultas a Prisma
-├── frontend/src/
-│   ├── pages/            # Login, registro y CRM
-│   ├── components/       # Componentes de la interfaz
-│   ├── api/              # Pedidos HTTP al backend
-│   └── context/          # Estado de la sesión
-└── docs/EXPOSICION.md
+backend/
+├── prisma/          # Modelos, migraciones y datos de ejemplo
+├── src/
+│   ├── routes/      # Endpoints de la API
+│   ├── middlewares/ # Autenticación, validación y manejo de errores
+│   ├── controllers/ # Entrada y respuesta HTTP
+│   ├── services/    # Operaciones sobre contactos y acceso a datos
+│   └── schemas/     # Reglas de validación
+└── tests/           # Pruebas unitarias y de integración
+frontend/
+├── src/
+│   ├── pages/       # Pantallas de acceso y CRM
+│   ├── components/  # Formularios, fichas y elementos de interfaz
+│   ├── api/         # Comunicación con el backend
+│   └── context/     # Estado de la sesión
+└── tests/           # Pruebas de componentes
 ```
 
-## Preparar el proyecto
+El frontend se comunica con la API mediante HTTP. El backend identifica al usuario, valida los datos y realiza las operaciones con Prisma. El navegador no accede directamente a la base de datos.
 
-Necesitás Node.js 22, npm y PostgreSQL en ejecución. La versión de Node coincide con `.nvmrc`, CI y la configuración de despliegue.
+## Entorno de desarrollo
 
-### 1. Base de datos
+El entorno utiliza **Node.js 22.12 o superior dentro de la rama 22**, npm y PostgreSQL. El archivo `.nvmrc` define la versión principal de Node utilizada por CI y la configuración de despliegue.
 
-Para una instalación nueva, creá una base vacía:
+Las dependencias de frontend y backend se administran por separado. Los archivos `.env` son locales y están excluidos de Git; sus variables de referencia están en [backend/.env.example](backend/.env.example) y [frontend/.env.example](frontend/.env.example).
+
+### Configuración
+
+La configuración local del backend corresponde a `backend/.env`:
+
+```dotenv
+DATABASE_URL="postgresql://usuario:password@localhost:5432/parcial_web?schema=public"
+PORT=4000
+JWT_SECRET="reemplazar-por-un-secreto-propio-y-aleatorio"
+JWT_EXPIRES_IN="1h"
+CORS_ORIGIN="http://localhost:5173"
+NODE_ENV="development"
+```
+
+La cadena `DATABASE_URL` identifica una base existente y las credenciales de la instalación. Una base nueva puede crearse con:
 
 ```sql
 CREATE DATABASE parcial_web;
 ```
 
-Si ya usabas este proyecto, conservá tu base y tu archivo `.env`: la migración del CRM agrega la tabla de contactos sin borrar los usuarios ni los datos anteriores.
-
-### 2. Backend
-
-```bash
-cd backend
-npm install
-```
-
-Si todavía no tenés `.env`, copiá `.env.example` a `.env` y completá los valores de tu instalación:
-
-```dotenv
-DATABASE_URL="postgresql://usuario:password@localhost:5432/parcial_web?schema=public"
-PORT=4000
-JWT_SECRET="un-secreto-largo-y-aleatorio"
-JWT_EXPIRES_IN="1h"
-CORS_ORIGIN="http://localhost:5173"
-```
-
-Aplicá las migraciones guardadas y generá el cliente de Prisma:
-
-```bash
-npx prisma migrate deploy
-npm run prisma:generate
-npm run seed
-npm run dev
-```
-
-El seed crea una cuenta de ejemplo y seis contactos, dos por cada estado. Conserva los contactos existentes de esa cuenta; si ya tiene contactos, no vuelve a agregarlos.
-
-En una instalación nueva, podés ingresar con:
-
-- Email: `test@example.com`
-- Contraseña: `password123`
-
-La API queda en `http://localhost:4000/api`. Podés comprobar que el servidor responde abriendo `http://localhost:4000/health`.
-
-### 3. Frontend
-
-En otra terminal:
-
-```bash
-cd frontend
-npm install
-```
-
-Si todavía no tenés `.env`, copiá `.env.example` a `.env`. La configuración local es:
+La configuración local del frontend corresponde a `frontend/.env`:
 
 ```dotenv
 VITE_API_URL="http://localhost:4000/api"
 ```
 
-Después:
+Vite da prioridad a `frontend/.env.local` cuando ese archivo existe. Las variables `VITE_` son públicas en el navegador; las credenciales y los secretos pertenecen exclusivamente al backend.
+
+### Ejecución local
+
+Los comandos del backend, desde la raíz del repositorio, son:
 
 ```bash
+cd backend
+npm ci
+npm run prisma:generate
+npx prisma migrate deploy
 npm run dev
 ```
 
-Abrí `http://localhost:5173`. Ambos servidores deben permanecer en ejecución. Si tenés un archivo `frontend/.env.local`, Vite le da prioridad sobre `.env`: revisalo si la interfaz apunta a otra API.
-
-## Usar el CRM
-
-1. Iniciá sesión o creá una cuenta.
-2. Agregá un contacto con su nombre, email y estado. Empresa, teléfono y notas son opcionales.
-3. Buscá contactos y filtrá por su estado comercial.
-4. Consultá o editá sus datos y actualizá el estado cuando avance la relación.
-5. Eliminá un contacto cuando corresponda, confirmando la operación.
-6. Cerrá sesión. Al ingresar con otra cuenta, verás sus propios contactos.
-
-Una cuenta nueva empieza sin contactos. Los datos de ejemplo pertenecen únicamente a la cuenta del seed.
-
-Los registros nuevos requieren una contraseña de al menos 15 caracteres y hasta 72 bytes UTF-8. La contraseña pública de la cuenta de ejemplo se conserva solo para la demostración local; no se debe usar como cuenta privada de producción.
-
-## API
-
-Las respuestas exitosas tienen el formato `{ "success": true, "data": ... }`. Los errores devuelven `{ "success": false, "error": "...", "details": ... }`; `details` es opcional.
-
-### Autenticación
-
-| Método | Ruta                 | Protegida | Función                             |
-| ------ | -------------------- | --------- | ----------------------------------- |
-| POST   | `/api/auth/register` | No        | Crear una cuenta y obtener un token |
-| POST   | `/api/auth/login`    | No        | Iniciar sesión y obtener un token   |
-| GET    | `/api/auth/me`       | Sí        | Consultar el usuario de la sesión   |
-
-### Contactos
-
-Todas las rutas requieren `Authorization: Bearer <token>`.
-
-| Método | Ruta                 | Función                                       |
-| ------ | -------------------- | --------------------------------------------- |
-| GET    | `/api/customers`     | Listar los contactos de la cuenta             |
-| GET    | `/api/customers/:id` | Consultar un contacto propio                  |
-| POST   | `/api/customers`     | Crear un contacto                             |
-| PUT    | `/api/customers/:id` | Actualizar los campos enviados de un contacto |
-| DELETE | `/api/customers/:id` | Eliminar un contacto propio                   |
-
-Ejemplo de creación:
-
-```json
-{
-  "name": "María López",
-  "company": "Estudio Norte",
-  "email": "maria@example.com",
-  "phone": "+54 351 555 0100",
-  "notes": "Consultar por la propuesta de diseño.",
-  "status": "PROSPECT"
-}
-```
-
-| Campo     | Regla                                                                       |
-| --------- | --------------------------------------------------------------------------- |
-| `name`    | Obligatorio, de 1 a 100 caracteres después de quitar espacios exteriores    |
-| `email`   | Obligatorio, formato válido y hasta 254 caracteres; se guarda en minúsculas |
-| `company` | Opcional, hasta 100 caracteres                                              |
-| `phone`   | Opcional, hasta 30 caracteres                                               |
-| `notes`   | Opcional, hasta 2000 caracteres                                             |
-| `status`  | `PROSPECT`, `FOLLOW_UP` o `CLIENT`; por defecto, `PROSPECT`                 |
-
-Los campos `id`, `userId`, `createdAt` y `updatedAt` los administra el servidor. El usuario dueño se obtiene del JWT, no del formulario. Las rutas `/api/items` del primer proyecto se conservan por compatibilidad; la interfaz del CRM trabaja con `/api/customers`.
-
-## Verificación y herramientas
-
-Desde `backend/`:
+El frontend se ejecuta en otra terminal:
 
 ```bash
-npm run build
-npm test
+cd frontend
+npm ci
+npm run dev
 ```
 
-`npm test` usa Jest. También podés separar `npm run test:unit` y `npm run test:integration`, o generar cobertura con `npm run test:coverage`.
+| Servicio                 | Dirección local                                            |
+| ------------------------ | ---------------------------------------------------------- |
+| Aplicación               | [localhost:5173](http://localhost:5173)                    |
+| API                      | `http://localhost:4000/api`                                |
+| Estado del servidor HTTP | `http://localhost:4000/health`                             |
+| Swagger UI               | [localhost:4000/api/docs](http://localhost:4000/api/docs/) |
+| Contrato OpenAPI         | `http://localhost:4000/api/openapi.json`                   |
 
-Las pruebas de integración necesitan la base de datos configurada y las migraciones aplicadas. Crean usuarios temporales para verificar la API y eliminan únicamente sus datos al terminar. Las unitarias no requieren PostgreSQL activo.
+### Datos de ejemplo
 
-Desde `frontend/`:
+El comando `npm run seed`, disponible en `backend/`, crea una cuenta de prueba y seis contactos ficticios, dos por estado. Los contactos existentes de esa cuenta se conservan.
 
-```bash
-npm test
-npm run build
-```
+| Campo      | Cuenta de ejemplo local |
+| ---------- | ----------------------- |
+| Email      | `test@example.com`      |
+| Contraseña | `password123`           |
 
-Las pruebas de componentes usan Jest y Testing Library; `npm run test:coverage` genera el informe de cobertura.
+Una cuenta nueva comienza sin contactos. Los registros nuevos requieren contraseñas de al menos 15 caracteres y hasta 72 bytes UTF-8. La cuenta de ejemplo es exclusiva del entorno de desarrollo y el seed está deshabilitado con `NODE_ENV=production`.
 
-Otros comandos del backend:
+## API REST
 
-| Comando                  | Uso                                               |
-| ------------------------ | ------------------------------------------------- |
-| `npm run prisma:migrate` | Crear y aplicar migraciones durante el desarrollo |
-| `npm run prisma:studio`  | Explorar los datos con Prisma Studio              |
-| `npm run seed`           | Preparar la cuenta y los contactos de ejemplo     |
-| `npm start`              | Ejecutar el backend ya compilado                  |
+La API devuelve JSON con el formato `{ "success": true, "data": ... }`. Los errores incluyen `success: false`, un mensaje en `error` y, cuando corresponde, detalles de validación.
 
-## Seguridad, rendimiento y automatización
+| Método | Ruta                 | Descripción                           |
+| ------ | -------------------- | ------------------------------------- |
+| POST   | `/api/auth/register` | Registro de una cuenta.               |
+| POST   | `/api/auth/login`    | Autenticación y emisión del token.    |
+| GET    | `/api/auth/me`       | Datos de la sesión actual.            |
+| GET    | `/api/customers`     | Contactos de la cuenta autenticada.   |
+| GET    | `/api/customers/:id` | Ficha de un contacto propio.          |
+| POST   | `/api/customers`     | Creación de un contacto.              |
+| PUT    | `/api/customers/:id` | Actualización de los campos enviados. |
+| DELETE | `/api/customers/:id` | Eliminación de un contacto propio.    |
 
-La API comprueba propiedad de los contactos, valida entradas, limita intentos y tamaño del JSON, restringe orígenes y aplica cabeceras de seguridad. En producción exige secreto propio y orígenes HTTPS. La [guía de seguridad](docs/SEGURIDAD.md) explica los valores y límites, incluido el riesgo de guardar un JWT en `localStorage`.
+Las rutas privadas requieren el encabezado `Authorization: Bearer <token>`. El nombre y el email del contacto son obligatorios; empresa, teléfono y notas son opcionales. El estado inicial es `PROSPECT`, con `FOLLOW_UP` y `CLIENT` como alternativas.
 
-Para repetir la auditoría SQL, desde `backend/`:
+El [contrato OpenAPI](backend/src/docs/openapi.json) describe los campos, las respuestas y la autenticación. Swagger UI presenta esa documentación y permite realizar solicitudes a la API. Los endpoints `/api/items` se conservan por compatibilidad y no forman parte de la interfaz de contactos.
 
-```bash
-npx tsx scripts/performance-audit.ts
-```
+## Pruebas e integración continua
 
-El script es de solo lectura. Con los seis contactos de la demostración, el listado produjo una consulta SQL y utilizó el índice en `userId`. Los tiempos y sus límites están en [PERFORMANCE.md](docs/PERFORMANCE.md).
+| Comando                    | Disponible en      | Descripción                                       |
+| -------------------------- | ------------------ | ------------------------------------------------- |
+| `npm test`                 | Backend y frontend | Ejecución de pruebas con Jest.                    |
+| `npm run test:coverage`    | Backend y frontend | Informe de cobertura de los módulos configurados. |
+| `npm run test:unit`        | Backend            | Pruebas de reglas, utilidades y configuración.    |
+| `npm run test:integration` | Backend            | Pruebas HTTP con PostgreSQL real.                 |
+| `npm run build`            | Backend y frontend | Compilación para producción.                      |
 
-El workflow `.github/workflows/ci.yml` prepara PostgreSQL temporal, aplica migraciones, ejecuta Jest y compila. El estado de una ejecución remota debe consultarse en la pestaña Actions del repositorio. Para publicar ambos servicios, seguí [DESPLIEGUE.md](docs/DESPLIEGUE.md); tener archivos de configuración no equivale a tener URLs de producción verificadas.
+Las pruebas de integración requieren una base disponible con las migraciones aplicadas. Crean cuentas temporales y eliminan únicamente sus propios datos al finalizar. Las pruebas unitarias del backend no necesitan una base activa.
 
-## Alcance
+El [workflow de CI](.github/workflows/ci.yml) ejecuta las pruebas, las compilaciones y la auditoría de dependencias de producción. El backend utiliza una instancia temporal de PostgreSQL. Las ejecuciones están disponibles en [GitHub Actions](https://github.com/nicopelinski2001-a11y/CRM-ProgramacionWeb/actions).
 
-Es un CRM de contactos: organiza información y permite seguir el estado de cada relación comercial. El alcance del parcial incluye autenticación, validación, persistencia y operaciones CRUD. Ventas, facturación, recordatorios y automatizaciones quedan fuera del proyecto.
+## Seguridad y rendimiento
 
-La sesión usa un JWT guardado en `localStorage`; el servidor comprueba su firma y vencimiento en cada pedido protegido. Las contraseñas se guardan con bcrypt y las consultas filtran por el dueño del contacto. Como mejora futura se pueden incorporar cookies `HttpOnly` con protección CSRF, paginación y roles de equipo. n8n se menciona como ampliación optativa en la guía de exposición; no se requiere ni se ejecuta ninguna automatización externa para usar el CRM.
+La aplicación utiliza contraseñas con hash bcrypt, JWT con vencimiento, validación de entradas, autorización por propietario, límites de solicitudes y cabeceras de seguridad. La configuración de producción exige un secreto propio y orígenes HTTPS.
+
+La sesión se conserva en `localStorage`, por lo que una vulnerabilidad XSS podría exponer el token. El cierre de sesión elimina la copia del navegador, sin revocar otras copias. Estos límites y los controles implementados están descritos en la [documentación de seguridad](docs/SEGURIDAD.md).
+
+El listado de contactos se obtiene con una consulta SQL y la tabla dispone de un índice sobre `userId`. La [auditoría de rendimiento](docs/PERFORMANCE.md) describe las mediciones y sus límites. El script `backend/scripts/performance-audit.ts` permite reproducir el análisis sin modificar datos.
+
+## Despliegue y documentación técnica
+
+El archivo [render.yaml](render.yaml) define un backend, un frontend estático y una base PostgreSQL para Render. La publicación de los servicios está pendiente; el repositorio incluye su configuración y las variables necesarias para ese entorno.
+
+- [Seguridad](docs/SEGURIDAD.md): controles, configuración y limitaciones.
+- [Testing](docs/TESTING.md): estrategia de pruebas y alcance de la cobertura.
+- [Rendimiento](docs/PERFORMANCE.md): consultas, índices y mediciones.
+- [Despliegue](docs/DESPLIEGUE.md): servicios, variables de entorno y publicación.
