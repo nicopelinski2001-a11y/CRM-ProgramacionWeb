@@ -1,0 +1,22 @@
+# Dependencias, compilaciones y resultados reproducibles
+**/node_modules/
+**/dist/
+**/coverage/
+**/*.tsbuildinfo
+
+# Configuración privada: únicamente se versionan ejemplos sin credenciales
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# Estado local de herramientas y sistema
+.netlify/
+.vercel/
+.openai/
+.DS_Store
+*.log
+.idea/
+.vscode/
