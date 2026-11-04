@@ -21,7 +21,7 @@ export function AuthLayout({ children }: { children: ReactNode }) {
             <br />
             Una nueva
             <br />
-            posibilidad<span>.</span>
+            <span>posibilidad.</span>
           </h2>
           <p>
             Conocé mejor a tus clientes y construí relaciones que hacen crecer

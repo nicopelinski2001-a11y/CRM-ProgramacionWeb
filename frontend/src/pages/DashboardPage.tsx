@@ -454,7 +454,7 @@ export function DashboardPage() {
 
             {isLoading ? (
               <div className="panel-state" role="status">
-                <span className="spinner spinner-purple" />
+                <span className="spinner spinner-accent" />
                 <h3>Preparando tu espacio…</h3>
                 <p>Estamos cargando tus contactos.</p>
               </div>
